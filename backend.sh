@@ -10,6 +10,9 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
+echo "Please enter DB Password:"
+read -s mysql_root_password
+
 VALIDATE(){
     if [ $1 -ne 0 ]
     then 
@@ -46,7 +49,7 @@ else
     echo -e "Expense user already created...$Y SKIPPING $N"
 fi
 
-mkdir -p /app 
+mkdir -p /app &>>$LOGFILE
 VALIDATE $? "creating app directory"
 
 curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
@@ -56,8 +59,27 @@ cd /app
 unzip /tmp/backend.zip
 VALIDATE $? "Downloading backend code"
 
-npm install 
+npm install &>>$LOGFILE
 VALIDATE $? "Installing nodejs dependencies"
 
+cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service
+VALIDATE $? "copied backend service"
 
+systemctl daemon-reload &>>$LOGFILE
+VALIDATE $? "daemon-reload"
+
+systemctl start backend &>>$LOGFILE
+VALIDATE $? "starting backend"
+
+systemctl enable backend &>>$LOGFILE
+VALIDATE $? "enabling backend"
+
+dnf install mysql -y &>>$LOGFILE
+VALIDATE $? "installing mysql client"
+
+mysql -h db.vinaydevops21.online -uroot -p${mysql_root_password} < /app/schema/backend.sql
+VALIDATE $? "schema loading"
+
+systemctl restart backend &>>$LOGFILE
+VALIDATE $? "schema loading"
 
