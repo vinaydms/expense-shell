@@ -9,25 +9,31 @@ Y="\e[33m"
 N="\e[0m"
 
 VALIDATE(){
-    if [ $1 -eq 0 ]
+    if [ $1 -ne 0 ]
     then
-        echo -e "$2...$G SUCCESS $N"
-    else
         echo -e "$2...$R FAILURE $N"
+    else
+        echo -e "$2...$G SUCCESS $N"
     fi
-}
+#     if [ $1 -eq 0 ]
+#     then
+#         echo -e "$2...$G SUCCESS $N"
+#     else
+#         echo -e "$2...$R FAILURE $N"
+#     fi
+# }
 
-# if [ $USERID -ne 0 ]
-# then    
-#     echo "Please run this script with root access."
-#     exit 1 # manually exit other than zero 
-# else
-#     echo "you are super user."
-#fi
-if [ $USERID -eq 0 ]
-then
+if [ $USERID -ne 0 ]
+then    
+    echo "Please run this script with root access."
+    exit 1 # manually exit other than zero 
+else
     echo "you are super user."
 fi
+# if [ $USERID -eq 0 ]
+# then
+#     echo "you are super user."
+# fi
 
 dnf install mysql-server -y &>>LOGFILE
 VALIDATE $? "Installing Mysql Server"
