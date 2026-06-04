@@ -21,7 +21,7 @@ VALIDATE(){
 #     else
 #         echo -e "$2...$R FAILURE $N"
 #     fi
-# }
+}
 
 if [ $USERID -ne 0 ]
 then    
@@ -46,3 +46,4 @@ VALIDATE $? "Starting Mysql Server"
 
 mysql_secure_installation --set-root-pass ExpenseApp@1 &>>LOGFILE
 VALIDATE $? " Setting Root Password" 
+
