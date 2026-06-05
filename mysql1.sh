@@ -46,6 +46,7 @@ VALIDATE $? "Enabling Mysql Server"
 systemctl start mysqld &>>$LOGFILE
 VALIDATE $? "Starting Mysql Server"
 
-mysql_sec
+mysql_secure_installation --set-root-pass ExpenseApp@1 &>>LOGFILE
+VALIDATE $? "Setting up root Password"
 
 
